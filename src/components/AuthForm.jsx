@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { Eye, EyeOff, Moon, Star } from 'lucide-react'
+import { Eye, EyeOff, Moon, Star, Zap } from 'lucide-react'
 import LoadingSpinner from './LoadingSpinner'
 
 export default function AuthForm() {
@@ -13,7 +13,27 @@ export default function AuthForm() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
-  const { signIn, signUp, signInWithGoogle } = useAuth()
+  const { signIn, signUp, signInWithGoogle, enterDemoMode } = useAuth()
+
+  function getErrorMessage(err) {
+    const msg = err?.message || String(err)
+    if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('fetch')) {
+      return 'Cannot connect to server. Check your internet connection, or use Demo Mode below.'
+    }
+    if (msg.includes('Invalid login credentials')) {
+      return 'Wrong email or password. Please try again.'
+    }
+    if (msg.includes('Email not confirmed')) {
+      return 'Please check your email and click the confirmation link first.'
+    }
+    if (msg.includes('User already registered')) {
+      return 'This email is already registered. Try signing in instead.'
+    }
+    if (msg.includes('Password should be at least')) {
+      return 'Password must be at least 6 characters.'
+    }
+    return msg
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -29,12 +49,15 @@ export default function AuthForm() {
         if (!displayName.trim()) {
           throw new Error('Please enter your display name')
         }
-        const { error } = await signUp(email, password, displayName)
+        const { data, error } = await signUp(email, password, displayName)
         if (error) throw error
-        setSuccess('Check your email to confirm your account!')
+        // If user is returned and confirmed, they're logged in
+        if (data?.user && !data?.user?.email_confirmed_at && data?.session === null) {
+          setSuccess('✅ Account created! Check your email to confirm, then sign in.')
+        }
       }
     } catch (err) {
-      setError(err.message)
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -43,7 +66,7 @@ export default function AuthForm() {
   async function handleGoogle() {
     setError('')
     const { error } = await signInWithGoogle()
-    if (error) setError(error.message)
+    if (error) setError(getErrorMessage(error))
   }
 
   return (
@@ -70,7 +93,7 @@ export default function AuthForm() {
           {/* Tab Toggle */}
           <div className="flex bg-slate-800/50 rounded-xl p-1 mb-6">
             <button
-              onClick={() => setMode('login')}
+              onClick={() => { setMode('login'); setError(''); setSuccess('') }}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
                 mode === 'login'
                   ? 'gradient-bg text-white shadow-lg'
@@ -80,7 +103,7 @@ export default function AuthForm() {
               Sign In
             </button>
             <button
-              onClick={() => setMode('signup')}
+              onClick={() => { setMode('signup'); setError(''); setSuccess('') }}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
                 mode === 'signup'
                   ? 'gradient-bg text-white shadow-lg'
@@ -161,18 +184,19 @@ export default function AuthForm() {
             </button>
           </form>
 
-          <div className="relative my-6">
+          <div className="relative my-5">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-700" />
             </div>
             <div className="relative flex justify-center text-xs text-slate-500">
-              <span className="bg-transparent px-3">or continue with</span>
+              <span className="bg-transparent px-3">or</span>
             </div>
           </div>
 
+          {/* Google Login */}
           <button
             onClick={handleGoogle}
-            className="w-full bg-slate-800/50 border border-slate-700 hover:border-slate-600 py-3 rounded-xl text-white font-medium transition-colors flex items-center justify-center gap-3"
+            className="w-full bg-slate-800/50 border border-slate-700 hover:border-slate-600 py-3 rounded-xl text-white font-medium transition-colors flex items-center justify-center gap-3 mb-3"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -183,9 +207,24 @@ export default function AuthForm() {
             Continue with Google
           </button>
 
-          <p className="text-center text-xs text-slate-500 mt-6">
-            By continuing, you agree to our Terms of Service and Privacy Policy
+          {/* Demo Mode */}
+          <button
+            onClick={enterDemoMode}
+            className="w-full bg-yellow-500/10 border border-yellow-500/30 hover:border-yellow-500/50 py-3 rounded-xl text-yellow-400 font-medium transition-colors flex items-center justify-center gap-2"
+          >
+            <Zap className="w-4 h-4" />
+            Try Demo Mode (No Account Needed)
+          </button>
+
+          <p className="text-center text-xs text-slate-500 mt-4">
+            Demo mode lets you explore all features without signing up
           </p>
+        </div>
+
+        {/* Setup hint */}
+        <div className="mt-4 glass rounded-xl p-4 text-xs text-slate-400">
+          <p className="font-medium text-slate-300 mb-1">⚙️ Setup Required</p>
+          <p>To use real accounts: run <code className="text-purple-400">supabase_schema.sql</code> in your Supabase SQL Editor, then update <code className="text-purple-400">.env.local</code> with your project credentials.</p>
         </div>
       </div>
     </div>
