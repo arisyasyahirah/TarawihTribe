@@ -110,14 +110,29 @@ export default function Events() {
   }
 
   async function fetchMyRsvps() {
+    // Try localStorage first
+    const rsvpKey = user ? `tarawihtribe_rsvps_${user.id}` : 'tarawihtribe_rsvps_demo'
+    const localRsvps = localStorage.getItem(rsvpKey)
+    if (localRsvps) {
+      setRsvps(new Set(JSON.parse(localRsvps)))
+    }
+    
+    // Then try Supabase
     try {
       const { data } = await supabase
         .from('tarawihtribe_event_rsvps')
         .select('event_id')
         .eq('user_id', user.id)
 
-      if (data) setRsvps(new Set(data.map(r => r.event_id)))
-    } catch {}
+      if (data && data.length > 0) {
+        const rsvpIds = data.map(r => r.event_id)
+        setRsvps(new Set(rsvpIds))
+        // Sync to localStorage
+        localStorage.setItem(rsvpKey, JSON.stringify(rsvpIds))
+      }
+    } catch (e) {
+      console.error('Fetch RSVPs error:', e)
+    }
   }
 
   async function toggleRsvp(event) {
@@ -141,6 +156,13 @@ export default function Events() {
         ? { ...e, rsvp_count: e.rsvp_count + (isGoing ? -1 : 1) }
         : e
     ))
+    
+    // Save to localStorage as backup
+    const rsvpKey = user ? `tarawihtribe_rsvps_${user.id}` : 'tarawihtribe_rsvps_demo'
+    const newRsvps = new Set(rsvps)
+    if (isGoing) newRsvps.delete(event.id)
+    else newRsvps.add(event.id)
+    localStorage.setItem(rsvpKey, JSON.stringify([...newRsvps]))
 
     // Save to Supabase only if we have a real UUID event
     if (eventId) {

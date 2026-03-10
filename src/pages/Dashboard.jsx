@@ -22,28 +22,48 @@ export default function Dashboard() {
   }, [user, profile])
 
   async function fetchStats() {
+    const storageKey = user.id ? `tarawihtribe_bingo_${user.id}` : 'tarawihtribe_bingo_demo'
+    const rsvpKey = user.id ? `tarawihtribe_rsvps_${user.id}` : 'tarawihtribe_rsvps_demo'
+    
+    // Load from localStorage first (offline backup)
+    const localBingo = localStorage.getItem(storageKey)
+    if (localBingo) {
+      const bingoArray = JSON.parse(localBingo)
+      setBingoCount(bingoArray.length)
+    }
+    
+    const localRsvps = localStorage.getItem(rsvpKey)
+    if (localRsvps) {
+      const rsvpArray = JSON.parse(localRsvps)
+      setRsvpCount(rsvpArray.length)
+      setRecentRsvps(rsvpArray.slice(0, 5))
+    }
+
     try {
-      // Fetch bingo count
+      // Fetch bingo count from Supabase
       const { count: bingoCountVal } = await supabase
         .from('tarawihtribe_bingo_progress')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id)
 
-      setBingoCount(bingoCountVal || 0)
+      if (bingoCountVal !== null && bingoCountVal > 0) {
+        setBingoCount(bingoCountVal)
+      }
 
       // Fetch RSVP count and events
-      const { data: rsvpData } = await supabase
+      const { data: rsvpData, error: rsvpError } = await supabase
         .from('tarawihtribe_event_rsvps')
-        .select(`
-          event_id,
-          tarawihtribe_events (title, date)
-        `)
+        .select('event_id')
         .eq('user_id', user.id)
-        .limit(5)
 
-      if (rsvpData) {
+      if (rsvpData && rsvpData.length > 0) {
         setRsvpCount(rsvpData.length)
-        setRecentRsvps(rsvpData)
+        // Save to localStorage for backup
+        localStorage.setItem(rsvpKey, JSON.stringify(rsvpData))
+      }
+      
+      if (rsvpError) {
+        console.error('RSVP fetch error:', rsvpError)
       }
     } catch (e) {
       console.error('Dashboard fetch error:', e)

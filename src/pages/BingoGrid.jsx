@@ -5,7 +5,7 @@ import { CheckCircle, Star, Grid3X3, Share2 } from 'lucide-react'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 async function handleShare(completedCount) {
-  const text = `🕌 I'm doing ${completedCount}/30 days of Ramadan Bingo! Join me at TarawihTribe!`
+  const text = `🕌 I'm doing ${completedCount}/30 days of Ramadan Bingo! Join me at TarawihTribe! https://tarawihtribe.vercel.app/ `
   
   if (navigator.share) {
     try {
