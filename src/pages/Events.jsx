@@ -183,6 +183,20 @@ export default function Events() {
             user_id: user.id,
             type: 'event_rsvp',
             data: { title: event.title, event_id: eventId }
+          }).catch(() => {
+            // Save to localStorage as backup
+            const activitiesKey = 'tarawihtribe_activities_local'
+            const stored = localStorage.getItem(activitiesKey)
+            const activities = stored ? JSON.parse(stored) : []
+            activities.push({
+              id: Date.now(),
+              user_id: user.id,
+              type: 'event_rsvp',
+              data: { title: event.title, event_id: eventId },
+              created_at: new Date().toISOString(),
+              isLocal: true
+            })
+            localStorage.setItem(activitiesKey, JSON.stringify(activities.slice(-50)))
           })
         }
       } catch (e) {

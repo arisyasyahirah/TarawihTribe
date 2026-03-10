@@ -130,6 +130,20 @@ export default function BingoGrid() {
             user_id: user.id,
             type: 'bingo_complete',
             data: { title: challenge?.title || `Day ${day}` }
+          }).catch(() => {
+            // Save to localStorage as backup
+            const activitiesKey = 'tarawihtribe_activities_local'
+            const stored = localStorage.getItem(activitiesKey)
+            const activities = stored ? JSON.parse(stored) : []
+            activities.push({
+              id: Date.now(),
+              user_id: user.id,
+              type: 'bingo_complete',
+              data: { title: challenge?.title || `Day ${day}` },
+              created_at: new Date().toISOString(),
+              isLocal: true
+            })
+            localStorage.setItem(activitiesKey, JSON.stringify(activities.slice(-50)))
           })
         }
       } catch (e) {

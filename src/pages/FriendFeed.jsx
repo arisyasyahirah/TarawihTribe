@@ -40,6 +40,24 @@ export default function FriendFeed() {
   }, [])
 
   async function fetchActivities() {
+    // Load from localStorage first
+    const localKey = 'tarawihtribe_activities_local'
+    const localData = localStorage.getItem(localKey)
+    if (localData) {
+      const localActivities = JSON.parse(localData)
+      const mapped = localActivities.map(a => ({
+        id: a.id,
+        user: 'You',
+        action: a.type === 'bingo_complete' ? 'completed bingo day' : a.type === 'event_rsvp' ? 'RSVPed to' : 'updated',
+        detail: a.data?.title || '',
+        icon: a.type === 'bingo_complete' ? '⭐' : a.type === 'event_rsvp' ? '📌' : '📌',
+        time: new Date(a.created_at),
+        color: 'text-purple-400',
+      }))
+      setActivities(mapped)
+    }
+    
+    // Then try Supabase
     const { data, error } = await supabase
       .from('tarawihtribe_activities')
       .select(`
@@ -59,7 +77,11 @@ export default function FriendFeed() {
         time: new Date(a.created_at),
         color: 'text-purple-400',
       }))
-      setActivities(mapped)
+      setActivities(prev => {
+        // Merge local and Supabase, dedupe by id
+        const combined = [...mapped, ...prev.filter(p => !mapped.find(m => m.id === p.id))]
+        return combined.slice(0, 50)
+      })
     }
     
     if (error) {
