@@ -40,33 +40,33 @@ export default function FriendFeed() {
   }, [])
 
   async function fetchActivities() {
-    try {
-      const { data } = await supabase
-        .from('tarawihtribe_activities')
-        .select(`
-          *,
-          tarawihtribe_profiles(display_name, username)
-        `)
-        .order('created_at', { ascending: false })
-        .limit(50)
+    const { data, error } = await supabase
+      .from('tarawihtribe_activities')
+      .select(`
+        *,
+        tarawihtribe_profiles(display_name, username)
+      `)
+      .order('created_at', { ascending: false })
+      .limit(50)
 
-      if (data && data.length > 0) {
-        const mapped = data.map(a => ({
-          id: a.id,
-          user: a.tarawihtribe_profiles?.display_name || 'Anonymous',
-          action: a.type === 'bingo_complete' ? 'completed bingo day' : a.type,
-          detail: a.data?.title || '',
-          icon: a.type === 'bingo_complete' ? '⭐' : '📌',
-          time: new Date(a.created_at),
-          color: 'text-purple-400',
-        }))
-        setActivities(mapped)
-      }
-    } catch {
-      // Keep mock data
-    } finally {
-      setLoading(false)
+    if (data && data.length > 0) {
+      const mapped = data.map(a => ({
+        id: a.id,
+        user: a.tarawihtribe_profiles?.display_name || 'Anonymous',
+        action: a.type === 'bingo_complete' ? 'completed bingo day' : a.type === 'event_rsvp' ? 'RSVPed to' : 'updated',
+        detail: a.data?.title || '',
+        icon: a.type === 'bingo_complete' ? '⭐' : a.type === 'event_rsvp' ? '📌' : '📌',
+        time: new Date(a.created_at),
+        color: 'text-purple-400',
+      }))
+      setActivities(mapped)
     }
+    
+    if (error) {
+      console.error('Activities fetch error:', error)
+    }
+    
+    setLoading(false)
   }
 
   function handleCheer(id) {

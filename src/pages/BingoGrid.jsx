@@ -123,6 +123,14 @@ export default function BingoGrid() {
             day_number: day,
             completed_at: new Date().toISOString(),
           })
+          
+          // Log activity for friend feed
+          const challenge = BINGO_CHALLENGES.find(c => c.day === day)
+          await supabase.from('tarawihtribe_activities').insert({
+            user_id: user.id,
+            type: 'bingo_complete',
+            data: { title: challenge?.title || `Day ${day}` }
+          })
         }
       } catch (e) {
         // Already saved to localStorage

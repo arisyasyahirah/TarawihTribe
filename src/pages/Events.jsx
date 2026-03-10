@@ -177,6 +177,13 @@ export default function Events() {
             user_id: user.id,
             event_id: eventId,
           }, { onConflict: 'event_id,user_id' })
+          
+          // Log activity for friend feed
+          await supabase.from('tarawihtribe_activities').insert({
+            user_id: user.id,
+            type: 'event_rsvp',
+            data: { title: event.title, event_id: eventId }
+          })
         }
       } catch (e) {
         console.error('RSVP error:', e)
