@@ -223,8 +223,9 @@ export default function AuthForm() {
 
         {/* Setup hint */}
         <div className="mt-4 glass rounded-xl p-4 text-xs text-slate-400">
-          <p className="font-medium text-slate-300 mb-1">⚙️ Setup Required</p>
-          <p>To use real accounts: run <code className="text-purple-400">supabase_schema.sql</code> in your Supabase SQL Editor, then update <code className="text-purple-400">.env.local</code> with your project credentials.</p>
+          <p className="font-medium text-yellow-400 mb-1">⚠️ Having trouble signing in?</p>
+          <p className="mb-2">If you created an account but can't sign in, check your email for a confirmation link.</p>
+          <p>Or use Demo Mode to explore without an account.</p>
         </div>
       </div>
     </div>
