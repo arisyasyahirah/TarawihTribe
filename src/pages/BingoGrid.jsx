@@ -5,37 +5,39 @@ import { CheckCircle, Star, Grid3X3, Share2 } from 'lucide-react'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 const BINGO_CHALLENGES = [
-  { day: 1, title: 'Pray terawih at mosque', desc: 'Attend Terawih prayer at Masjid', icon: '🕌' },
-  { day: 2, title: 'Bring friend to mosque', desc: 'Invite a friend to pray together', icon: '🤝' },
-  { day: 3, title: 'Donate RM1 to mosque', desc: 'Give any amount of charity', icon: '💝' },
-  { day: 4, title: 'Read 1 page Quran', desc: 'Read at least 1 page of Quran', icon: '📖' },
-  { day: 5, title: 'Help someone find parking', desc: 'Assist someone with parking', icon: '🚗' },
-  { day: 6, title: 'Break fast at mosque', desc: 'Iftar at the mosque', icon: '🍽️' },
-  { day: 7, title: 'Smile at 5 people', desc: 'Spread positivity', icon: '😊' },
-  { day: 8, title: 'Bring dates for iftar', desc: 'Bring dates to share for iftar', icon: '🌴' },
-  { day: 9, title: 'Pray 5 prayers at mosque', desc: 'Pray all 5 daily prayers at mosque', icon: '🙏' },
-  { day: 10, title: 'Learn 1 new surah', desc: 'Memorize a new surah', icon: '📚' },
-  { day: 11, title: 'Help clean mosque area', desc: 'Volunteer to clean', icon: '🧹' },
-  { day: 12, title: 'Give salam to 10 people', desc: 'Greet others with salam', icon: '👋' },
-  { day: 13, title: 'Bring water for wudhu', desc: 'Contribute water for wudhu', icon: '💧' },
-  { day: 14, title: 'Pray sunnah prayers', desc: 'Perform sunnah prayers', icon: '⭐' },
-  { day: 15, title: 'Donate old Quran', desc: 'Give old Quran to mosque', icon: '📕' },
-  { day: 16, title: 'Help elderly find seat', desc: 'Assist elderly to sit', icon: '👴' },
-  { day: 17, title: 'Read Quran 15 minutes', desc: 'Read Quran for 15 minutes', icon: '⏱️' },
-  { day: 18, title: 'Bring snack for volunteers', desc: 'Pack snacks for volunteers', icon: '🍪' },
-  { day: 19, title: 'Pray full terawih', desc: 'Complete full 20 rakaat', icon: '🏆' },
-  { day: 20, title: 'Listen to kuliah', desc: 'Attend Islamic lecture', icon: '🎤' },
-  { day: 21, title: 'Bring family to mosque', desc: 'Bring family for terawih', icon: '👨‍👩‍👧' },
-  { day: 22, title: 'Donate to mosque box', desc: 'Give to mosque donation box', icon: '💰' },
-  { day: 23, title: 'Help prepare iftar', desc: 'Help prepare food for iftar', icon: '🥘' },
-  { day: 24, title: 'Pray qiamullail', desc: 'Perform night prayer', icon: '🌙' },
-  { day: 25, title: 'Recite Quran after subuh', desc: 'Read Quran after morning prayer', icon: '🌅' },
-  { day: 26, title: 'Bring non-Muslim friend', desc: 'Invite non-Muslim friend', icon: '🌍' },
-  { day: 27, title: 'Do 10 push-ups', desc: 'Stay physically healthy', icon: '💪' },
-  { day: 28, title: 'Thank mosque cleaner', desc: 'Appreciate the cleaners', icon: '🙌' },
-  { day: 29, title: 'Help clean for Eid', desc: 'Prepare mosque for Eid', icon: '🧹' },
-  { day: 30, title: "Make du'a for community", desc: 'Pray for the community', icon: '🤲' },
+  {day: 'Pray terawih at mosque', desc: 'Attend Terawih prayer at Masjid', icon: '🕌' },
+  { day:'Bring friend to mosque', desc: 'Invite a friend to pray together', icon: '🤝' },
+  { day: 'Donate RM1 to mosque', desc: 'Give any amount of charity', icon: '💝' },
+  { day: 'Read 1 page Quran', desc: 'Read at least 1 page of Quran', icon: '📖' },
+  { day: 'Help someone find parking', desc: 'Assist someone with parking', icon: '🚗' },
+  { day: 'Break fast at mosque', desc: 'Iftar at the mosque', icon: '🍽️' },
+  { day: 'Smile at 5 people', desc: 'Spread positivity', icon: '😊' },
+  { day: 'Bring dates for iftar', desc: 'Bring dates to share for iftar', icon: '🌴' },
+  { day: 'Pray 5 prayers at mosque', desc: 'Pray all 5 daily prayers at mosque', icon: '🙏' },
+  { day: 'Learn 1 new surah', desc: 'Memorize a new surah', icon: '📚' },
+  { day: 'Help clean mosque area', desc: 'Volunteer to clean', icon: '🧹' },
+  { day: 'Give salam to 10 people', desc: 'Greet others with salam', icon: '👋' },
+  { day: 'Bring water for wudhu', desc: 'Contribute water for wudhu', icon: '💧' },
+  { day: 'Pray sunnah prayers', desc: 'Perform sunnah prayers', icon: '⭐' },
+  { day: 'Donate old Quran', desc: 'Give old Quran to mosque', icon: '📕' },
+  { day: 'Help elderly find seat', desc: 'Assist elderly to sit', icon: '👴' },
+  { day: 'Read Quran 15 minutes', desc: 'Read Quran for 15 minutes', icon: '⏱️' },
+  { day: 'Bring snack for volunteers', desc: 'Pack snacks for volunteers', icon: '🍪' },
+  { day: 'Pray full terawih', desc: 'Complete full 20 rakaat', icon: '🏆' },
+  { day: 'Listen to kuliah', desc: 'Attend Islamic lecture', icon: '🎤' },
+  { day: 'Bring family to mosque', desc: 'Bring family for terawih', icon: '👨‍👩‍👧' },
+  { day: 'Donate to mosque box', desc: 'Give to mosque donation box', icon: '💰' },
+  { day: 'Help prepare iftar', desc: 'Help prepare food for iftar', icon: '🥘' },
+  { day: 'Pray qiamullail', desc: 'Perform night prayer', icon: '🌙' },
+  { day: 'Recite Quran after subuh', desc: 'Read Quran after morning prayer', icon: '🌅' },
+  { day: 'Bring non-Muslim friend', desc: 'Invite non-Muslim friend', icon: '🌍' },
+  { day: 'Do 10 push-ups', desc: 'Stay physically healthy', icon: '💪' },
+  { day: 'Thank mosque cleaner', desc: 'Appreciate the cleaners', icon: '🙌' },
+  { day: 'Help clean for Eid', desc: 'Prepare mosque for Eid', icon: '🧹' },
+  { day:  "Make du'a for community", desc: 'Pray for the community', icon: '🤲' },
 ]
+
+const getStorageKey = (userId) => `tarawihtribe_bingo_${userId || 'demo'}`
 
 export default function BingoGrid() {
   const { user } = useAuth()
@@ -44,67 +46,77 @@ export default function BingoGrid() {
   const [toggling, setToggling] = useState(null)
 
   useEffect(() => {
-    if (user) fetchProgress()
-    else setLoading(false)
+    if (user) {
+      fetchProgress()
+    } else {
+      const saved = localStorage.getItem(getStorageKey('demo'))
+      if (saved) {
+        setCompleted(new Set(JSON.parse(saved)))
+      }
+      setLoading(false)
+    }
   }, [user])
 
   async function fetchProgress() {
+    const storageKey = getStorageKey(user.id)
+    const localData = localStorage.getItem(storageKey)
+    if (localData) {
+      setCompleted(new Set(JSON.parse(localData)))
+    }
+
     try {
       const { data } = await supabase
         .from('tarawihtribe_bingo_progress')
         .select('day_number')
         .eq('user_id', user.id)
 
-      if (data) {
-        setCompleted(new Set(data.map(r => r.day_number)))
+      if (data && data.length > 0) {
+        const cloudDays = new Set(data.map(r => r.day_number))
+        setCompleted(cloudDays)
+        localStorage.setItem(storageKey, JSON.stringify([...cloudDays]))
       }
-    } catch {
-      // Use local state
-    } finally {
-      setLoading(false)
+    } catch (e) {
+      // Use local data
     }
+    setLoading(false)
   }
 
   async function toggleDay(day) {
-    if (!user || toggling) return
+    if (toggling) return
     setToggling(day)
     const isCompleted = completed.has(day)
+    const storageKey = getStorageKey(user?.id)
 
-    // Optimistic update
-    setCompleted(prev => {
-      const next = new Set(prev)
-      if (isCompleted) next.delete(day)
-      else next.add(day)
-      return next
-    })
-
-    try {
-      if (isCompleted) {
-        await supabase
-          .from('tarawihtribe_bingo_progress')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('day_number', day)
-      } else {
-        await supabase.from('tarawihtribe_bingo_progress').upsert({
-          user_id: user.id,
-          day_number: day,
-          completed_at: new Date().toISOString(),
-        })
-
-        // Log activity for friend feed
-        await supabase.from('tarawihtribe_activities').insert({
-          user_id: user.id,
-          type: 'bingo_complete',
-          data: { day, title: BINGO_CHALLENGES[day - 1].title },
-          created_at: new Date().toISOString(),
-        }).catch(() => {})
-      }
-    } catch {
-      // Error handled, keep optimistic update
-    } finally {
-      setToggling(null)
+    const newSet = new Set(completed)
+    if (isCompleted) {
+      newSet.delete(day)
+    } else {
+      newSet.add(day)
     }
+    setCompleted(newSet)
+    localStorage.setItem(storageKey, JSON.stringify([...newSet]))
+
+    if (user) {
+      try {
+        if (isCompleted) {
+          await supabase
+            .from('tarawihtribe_bingo_progress')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('day_number', day)
+        } else {
+          await supabase.from('tarawihtribe_bingo_progress').upsert({
+            user_id: user.id,
+            day_number: day,
+            completed_at: new Date().toISOString(),
+          })
+        }
+      } catch (e) {
+        // Already saved to localStorage
+      }
+    }
+
+    setToggling(null)
   }
 
   const completedCount = completed.size
@@ -116,7 +128,6 @@ export default function BingoGrid() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -131,7 +142,6 @@ export default function BingoGrid() {
         </button>
       </div>
 
-      {/* Progress */}
       <div className="glass rounded-2xl p-5">
         <div className="flex items-center justify-between mb-3">
           <div>
@@ -144,10 +154,7 @@ export default function BingoGrid() {
           </div>
         </div>
         <div className="w-full bg-slate-800 rounded-full h-3 overflow-hidden">
-          <div
-            className="h-full rounded-full gradient-bg transition-all duration-700"
-            style={{ width: `${percentage}%` }}
-          />
+          <div className="h-full rounded-full gradient-bg transition-all duration-700" style={{ width: `${percentage}%` }} />
         </div>
         {completedCount === 30 && (
           <div className="mt-3 text-center text-yellow-400 font-bold animate-pulse">
@@ -156,7 +163,6 @@ export default function BingoGrid() {
         )}
       </div>
 
-      {/* Bingo Grid */}
       <div className="grid grid-cols-5 gap-2 sm:gap-3">
         {BINGO_CHALLENGES.map(challenge => {
           const isDone = completed.has(challenge.day)
@@ -191,7 +197,6 @@ export default function BingoGrid() {
         })}
       </div>
 
-      {/* Tooltip / hover info - show on larger screens */}
       <div className="glass rounded-2xl p-4">
         <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
           <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
