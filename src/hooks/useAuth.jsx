@@ -3,7 +3,6 @@ import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
-// Demo user for offline/demo mode
 const DEMO_USER = {
   id: 'demo-user-001',
   email: 'demo@tarawihtribe.com',
@@ -16,37 +15,46 @@ const DEMO_PROFILE = {
 }
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [demoMode, setDemoMode] = useState(false)
+  const [user, setUser] = useState(DEMO_USER)
+  const [profile, setProfile] = useState(DEMO_PROFILE)
+  const [loading, setLoading] = useState(false)
+  const [demoMode, setDemoMode] = useState(true)
+
+  const isSupabaseConfigured = () => {
+    const url = import.meta.env.VITE_SUPABASE_URL
+    const key = import.meta.env.VITE_SUPABASE_ANON_KEY
+    return url && key && !url.includes('placeholder') && !key.includes('placeholder')
+  }
 
   useEffect(() => {
-    // Check if demo mode was previously set
-    if (localStorage.getItem('tt_demo_mode') === 'true') {
-      setUser(DEMO_USER)
-      setProfile(DEMO_PROFILE)
-      setDemoMode(true)
-      setLoading(false)
-      return
-    }
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else setLoading(false)
-    }).catch(() => setLoading(false))
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else {
-        setProfile(null)
+    if (isSupabaseConfigured()) {
+      setDemoMode(false)
+      setUser(null)
+      setProfile(null)
+      
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null)
+        if (session?.user) fetchProfile(session.user.id)
+        else setLoading(false)
+      }).catch(() => {
+        setUser(DEMO_USER)
+        setProfile(DEMO_PROFILE)
+        setDemoMode(true)
         setLoading(false)
-      }
-    })
+      })
 
-    return () => subscription.unsubscribe()
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null)
+        if (session?.user) {
+          fetchProfile(session.user.id)
+        } else {
+          setProfile(null)
+          setLoading(false)
+        }
+      })
+
+      return () => subscription.unsubscribe()
+    }
   }, [])
 
   async function fetchProfile(userId) {
@@ -58,7 +66,6 @@ export function AuthProvider({ children }) {
         .single()
       setProfile(data)
     } catch {
-      // Profile may not exist yet — create a basic one
       setProfile({ id: userId, display_name: 'User', role: 'member' })
     } finally {
       setLoading(false)
@@ -66,18 +73,16 @@ export function AuthProvider({ children }) {
   }
 
   async function signUp(email, password, displayName) {
+    if (!isSupabaseConfigured()) {
+      return { data: null, error: { message: 'Please configure Supabase to use sign up. Or use Demo Mode!' } }
+    }
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: { display_name: displayName },
-          emailRedirectTo: window.location.origin,
-        }
+        options: { data: { display_name: displayName }, emailRedirectTo: window.location.origin }
       })
       if (error) return { data, error }
-
-      // Try to create profile immediately (trigger may handle this too)
       if (data.user) {
         await supabase.from('tarawihtribe_profiles').upsert({
           id: data.user.id,
@@ -88,26 +93,32 @@ export function AuthProvider({ children }) {
       }
       return { data, error: null }
     } catch (err) {
-      return { data: null, error: { message: err.message || 'Network error. Check your connection.' } }
+      return { data: null, error: { message: err.message || 'Network error' } }
     }
   }
 
   async function signIn(email, password) {
+    if (!isSupabaseConfigured()) {
+      return { data: null, error: { message: 'Please configure Supabase to sign in. Use Demo Mode instead!' } }
+    }
     try {
       return await supabase.auth.signInWithPassword({ email, password })
     } catch (err) {
-      return { data: null, error: { message: err.message || 'Network error. Check your connection.' } }
+      return { data: null, error: { message: err.message || 'Network error' } }
     }
   }
 
   async function signInWithGoogle() {
+    if (!isSupabaseConfigured()) {
+      return { data: null, error: { message: 'Please configure Supabase for Google login. Use Demo Mode!' } }
+    }
     try {
       return await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.origin }
       })
     } catch (err) {
-      return { data: null, error: { message: err.message || 'Google login failed.' } }
+      return { data: null, error: { message: err.message || 'Google login failed' } }
     }
   }
 
@@ -119,14 +130,9 @@ export function AuthProvider({ children }) {
   }
 
   async function signOut() {
-    if (demoMode) {
-      localStorage.removeItem('tt_demo_mode')
-      setUser(null)
-      setProfile(null)
-      setDemoMode(false)
-      return
+    if (user) {
+      return supabase.auth.signOut()
     }
-    return supabase.auth.signOut()
   }
 
   async function updateProfile(updates) {

@@ -15,10 +15,10 @@ import AdminPanel from './pages/AdminPanel'
 import Notifications from './pages/Notifications'
 
 function AppRoutes() {
-  const { user, loading } = useAuth()
+  const { user, loading, demoMode } = useAuth()
 
   if (loading) return <PageLoader />
-  if (!user) return <AuthForm />
+  if (!user && !demoMode) return <AuthForm />
 
   return (
     <div className="min-h-screen bg-[#0f172a]">
