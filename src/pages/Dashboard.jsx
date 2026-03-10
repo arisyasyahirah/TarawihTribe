@@ -23,19 +23,31 @@ export default function Dashboard() {
 
   async function fetchStats() {
     try {
-      const [bingoRes, rsvpRes] = await Promise.allSettled([
-        supabase.from('tarawihtribe_bingo_progress').select('day_number', { count: 'exact' }).eq('user_id', user.id),
-        supabase.from('tarawihtribe_event_rsvps').select('event_id, tarawihtribe_events(title, date)').eq('user_id', user.id).limit(5),
-      ])
+      // Fetch bingo count
+      const { count: bingoCountVal } = await supabase
+        .from('tarawihtribe_bingo_progress')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
 
-      if (bingoRes.status === 'fulfilled' && bingoRes.value.count !== null) {
-        setBingoCount(bingoRes.value.count)
+      setBingoCount(bingoCountVal || 0)
+
+      // Fetch RSVP count and events
+      const { data: rsvpData } = await supabase
+        .from('tarawihtribe_event_rsvps')
+        .select(`
+          event_id,
+          tarawihtribe_events (title, date)
+        `)
+        .eq('user_id', user.id)
+        .limit(5)
+
+      if (rsvpData) {
+        setRsvpCount(rsvpData.length)
+        setRecentRsvps(rsvpData)
       }
-      if (rsvpRes.status === 'fulfilled' && rsvpRes.value.data) {
-        setRsvpCount(rsvpRes.value.data.length)
-        setRecentRsvps(rsvpRes.value.data)
-      }
-    } catch {}
+    } catch (e) {
+      console.error('Dashboard fetch error:', e)
+    }
     finally {
       setLoading(false)
     }

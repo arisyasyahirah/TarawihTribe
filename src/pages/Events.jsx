@@ -120,39 +120,53 @@ export default function Events() {
     } catch {}
   }
 
-  async function toggleRsvp(eventId) {
+  async function toggleRsvp(event) {
     if (!user) return
-    setRsvpLoading(eventId)
-    const isGoing = rsvps.has(eventId)
+    setRsvpLoading(event.id)
+    const isGoing = rsvps.has(event.id)
 
-    // Optimistic
+    // Use Supabase event if available (has UUID id), otherwise skip save
+    const supabaseEvent = events.find(e => e.id && e.id.length > 10)
+    const eventId = supabaseEvent ? event.id : null
+
+    // Optimistic UI update
     setRsvps(prev => {
       const next = new Set(prev)
-      if (isGoing) next.delete(eventId)
-      else next.add(eventId)
+      if (isGoing) next.delete(event.id)
+      else next.add(event.id)
       return next
     })
     setEvents(prev => prev.map(e =>
-      e.id === eventId
+      e.id === event.id
         ? { ...e, rsvp_count: e.rsvp_count + (isGoing ? -1 : 1) }
         : e
     ))
 
-    try {
-      if (isGoing) {
-        await supabase.from('tarawihtribe_event_rsvps')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('event_id', eventId)
-      } else {
-        await supabase.from('tarawihtribe_event_rsvps').upsert({
-          user_id: user.id,
-          event_id: eventId,
-          created_at: new Date().toISOString()
+    // Save to Supabase only if we have a real UUID event
+    if (eventId) {
+      try {
+        if (isGoing) {
+          await supabase.from('tarawihtribe_event_rsvps')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('event_id', eventId)
+        } else {
+          await supabase.from('tarawihtribe_event_rsvps').upsert({
+            user_id: user.id,
+            event_id: eventId,
+          }, { onConflict: 'event_id,user_id' })
+        }
+      } catch (e) {
+        console.error('RSVP error:', e)
+        // Revert on error
+        setRsvps(prev => {
+          const next = new Set(prev)
+          if (isGoing) next.add(event.id)
+          else next.delete(event.id)
+          return next
         })
       }
-    } catch {}
-
+    }
     setRsvpLoading(null)
   }
 
