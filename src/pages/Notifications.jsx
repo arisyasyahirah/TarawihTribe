@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 
 const MOCK_NOTIFICATIONS = [
   { id: 1, type: 'event', title: 'Reminder: Qiamullail Tonight', body: 'Qiamullail at Masjid Salahuddin starts at 2:00 AM. Don\'t miss it!', time: new Date(Date.now() - 10 * 60000), read: false, icon: '🌟' },
-  { id: 2, type: 'bingo', title: 'Don\'t forget your Bingo today!', body: 'Complete today\'s challenge: Day 14 — Half Ramadan!', time: new Date(Date.now() - 2 * 3600000), read: false, icon: '⭐' },
+  { id: 2, type: 'bingo', title: 'Don\'t forget your Bingo today!', body: 'Complete today\'s challenge: Day 14 — Pray sunnah prayers', time: new Date(Date.now() - 2 * 3600000), read: false, icon: '⭐' },
   { id: 3, type: 'friend', title: 'Ahmad Razif completed Day 13', body: 'Your friend just completed their bingo challenge!', time: new Date(Date.now() - 5 * 3600000), read: true, icon: '🎉' },
   { id: 4, type: 'event', title: 'Community Iftar tomorrow', body: 'Don\'t forget you RSVPed for Community Iftar Besar tomorrow at 6:30 PM.', time: new Date(Date.now() - 8 * 3600000), read: true, icon: '🍽️' },
   { id: 5, type: 'crowd', title: 'Parking A is clearing up', body: 'Crowd level at Parking A has dropped to Moderate. Good time to head over!', time: new Date(Date.now() - 12 * 3600000), read: true, icon: '🅿️' },

@@ -6,11 +6,11 @@ import LoadingSpinner from '../components/LoadingSpinner'
 import { formatDistanceToNow } from 'date-fns'
 
 const MOCK_ACTIVITIES = [
-  { id: 1, user: 'Ahmad Razif', action: 'completed bingo day', detail: 'Day 14: Half Ramadan!', icon: '⭐', time: new Date(Date.now() - 5 * 60000), color: 'text-yellow-400' },
+  { id: 1, user: 'Ahmad Razif', action: 'completed bingo day', detail: 'Day 14: Pray sunnah prayers', icon: '⭐', time: new Date(Date.now() - 5 * 60000), color: 'text-yellow-400' },
   { id: 2, user: 'Nur Hidayah', action: 'marked attendance for', detail: 'Qiamullail Night', icon: '🌟', time: new Date(Date.now() - 12 * 60000), color: 'text-purple-400' },
-  { id: 3, user: 'Hafiz Rahman', action: 'completed bingo day', detail: 'Day 13: No Waste Day', icon: '♻️', time: new Date(Date.now() - 25 * 60000), color: 'text-green-400' },
+  { id: 3, user: 'Hafiz Rahman', action: 'completed bingo day', detail: 'Day 13: Bring water for wudhu', icon: '💧', time: new Date(Date.now() - 25 * 60000), color: 'text-green-400' },
   { id: 4, user: 'Fatimah Zahra', action: 'RSVPed to', detail: 'Kuliah After Isha', icon: '📖', time: new Date(Date.now() - 45 * 60000), color: 'text-blue-400' },
-  { id: 5, user: 'Amirul Fikri', action: 'completed bingo day', detail: 'Day 12: Suhoor Woke', icon: '⏰', time: new Date(Date.now() - 60 * 60000), color: 'text-orange-400' },
+  { id: 5, user: 'Amirul Fikri', action: 'completed bingo day', detail: 'Day 12: Give salam to 10 people', icon: '👋', time: new Date(Date.now() - 60 * 60000), color: 'text-orange-400' },
   { id: 6, user: 'Siti Aisyah', action: 'reported crowd at', detail: 'Main Hall — Full', icon: '🕌', time: new Date(Date.now() - 90 * 60000), color: 'text-red-400' },
 ]
 
