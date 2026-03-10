@@ -4,6 +4,19 @@ import { useAuth } from '../hooks/useAuth'
 import { CheckCircle, Star, Grid3X3, Share2 } from 'lucide-react'
 import LoadingSpinner from '../components/LoadingSpinner'
 
+async function handleShare(completedCount) {
+  const text = `🕌 I'm doing ${completedCount}/30 days of Ramadan Bingo! Join me at TarawihTribe!`
+  
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'TarawihTribe Ramadan Bingo', text })
+    } catch { /* user cancelled */ }
+  } else {
+    await navigator.clipboard.writeText(text)
+    alert('Copied to clipboard! Share on your social media 📱')
+  }
+}
+
 const BINGO_CHALLENGES = [
   {day: 'Pray terawih at mosque', desc: 'Attend Terawih prayer at Masjid', icon: '🕌' },
   { day:'Bring friend to mosque', desc: 'Invite a friend to pray together', icon: '🤝' },
@@ -136,7 +149,10 @@ export default function BingoGrid() {
           </h2>
           <p className="text-slate-400 text-sm mt-1">Complete daily challenges to earn your star</p>
         </div>
-        <button className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors glass rounded-xl px-3 py-2">
+        <button 
+          onClick={() => handleShare(completedCount)}
+          className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors glass rounded-xl px-3 py-2"
+        >
           <Share2 className="w-4 h-4" />
           Share
         </button>

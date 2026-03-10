@@ -268,17 +268,17 @@ export default function Events() {
 
                 {/* RSVP Button */}
                 <button
-                  onClick={() => toggleRsvp(event.id)}
+                  onClick={() => toggleRsvp(event)}
                   disabled={isLoading}
                   className={`flex-shrink-0 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all ${
-                    isGoing
+                    rsvps.has(event.id)
                       ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/30'
                       : 'gradient-bg text-white hover:opacity-90'
                   } disabled:opacity-50`}
                 >
                   {isLoading ? (
                     <LoadingSpinner size="sm" />
-                  ) : isGoing ? (
+                  ) : rsvps.has(event.id) ? (
                     <span className="flex items-center gap-1.5">
                       <CheckCircle className="w-4 h-4" />
                       Going
