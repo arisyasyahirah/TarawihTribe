@@ -5,6 +5,7 @@ import { PageLoader } from './components/LoadingSpinner'
 import AuthForm from './components/AuthForm'
 import Navbar from './components/Navbar'
 import BottomNav from './components/BottomNav'
+import Footer from './components/Footer'
 import Home from './pages/Home'
 import CrowdMap from './pages/CrowdMap'
 import BingoGrid from './pages/BingoGrid'
@@ -37,6 +38,7 @@ function AppRoutes() {
         </Routes>
       </main>
       <BottomNav />
+      <Footer />
     </div>
   )
 }
